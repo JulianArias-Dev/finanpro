@@ -52,11 +52,14 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  "Educación Financiera",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Educación Financiera",
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 15),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -87,7 +90,7 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 100),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(15),
@@ -98,9 +101,12 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  "Gestión de Préstamos",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Gestión de Préstamos",
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 SingleChildScrollView(
@@ -123,7 +129,7 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildOptionButton(String title, BuildContext context, Widget? page) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 5),
+      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       child: ElevatedButton(
         onPressed:
             page != null
@@ -132,7 +138,26 @@ class HomeScreen extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => page),
                 )
                 : null,
-        child: Text(title, textAlign: TextAlign.center),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 25),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: const BorderSide(
+              color: Color.fromARGB(255, 111, 183, 31),
+              width: 3,
+            ),
+          ),
+          minimumSize: const Size(130, 95),
+        ),
+        child: SizedBox(
+          width: 95, // Set a fixed width to wrap text
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 14),
+          ),
+        ),
       ),
     );
   }

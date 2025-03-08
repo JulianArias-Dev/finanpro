@@ -11,7 +11,13 @@ class InterestScreen extends StatelessWidget {
     TextEditingController resultController = TextEditingController();
 
     return Scaffold(
-      appBar: AppBar(title: const Text("FinanPro")),
+      appBar: AppBar(
+        title: const Text(
+          "FinanPro",
+          style: TextStyle(color: Colors.white, fontSize: 30),
+        ),
+        backgroundColor: Color.fromARGB(255, 111, 183, 31),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -44,7 +50,12 @@ class InterestScreen extends StatelessWidget {
                 double interest = (capital * rate * time) / 100;
                 resultController.text = interest.toStringAsFixed(2);
               },
-              child: const Text("Calcular"),
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(80, 55),
+                backgroundColor: const Color.fromARGB(255, 111, 183, 31),
+                foregroundColor: Colors.white, // Text color
+              ),
+              child: const Text("Calcular", style: TextStyle(fontSize: 20)),
             ),
           ],
         ),
@@ -65,7 +76,24 @@ class InterestScreen extends StatelessWidget {
         readOnly: readOnly,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(),
+          border: OutlineInputBorder(
+            borderSide: const BorderSide(
+              color: Color.fromARGB(255, 111, 183, 31),
+              width: 2, // Border width
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              color: Color.fromARGB(255, 111, 183, 31),
+              width: 2, // Border width
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              color: Color.fromARGB(255, 111, 183, 31),
+              width: 2, // Border width
+            ),
+          ),
         ),
       ),
     );
