@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'components/text_field.dart';
 
-class InterestScreen extends StatelessWidget {
-  const InterestScreen({super.key});
+class InteresCompuestoScreen extends StatelessWidget {
+  const InteresCompuestoScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +25,12 @@ class InterestScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "Interés Simple",
+              "Interés Compuesto",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
             const Text(
-              "El interés simple se genera sobre un capital inicial con una tasa fija sobre el saldo original de la inversión o préstamo.",
+              "Es aquel que se va sumando al capital inicial y sobre el que se van generando nuevos intereses. El dinero, en este caso, tiene un efecto multiplicador porque los intereses producen nuevos intereses.",
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 20),
