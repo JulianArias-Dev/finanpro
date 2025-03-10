@@ -1,5 +1,7 @@
+import 'package:finan_pro_v1/views/anualidades_screen.dart';
 import 'package:flutter/material.dart';
 import 'interes_simple_screen.dart';
+import 'interes_compuesto_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -69,8 +71,16 @@ class HomeScreen extends StatelessWidget {
                         context,
                         const InterestScreen(),
                       ),
-                      _buildOptionButton("Interés Compuesto", context, null),
-                      _buildOptionButton("Anualidades", context, null),
+                      _buildOptionButton(
+                        "Interés Compuesto",
+                        context,
+                        const InteresCompuestoScreen(),
+                      ),
+                      _buildOptionButton(
+                        "Anualidades",
+                        context,
+                        const AnualidadesScreen(),
+                      ),
                       _buildOptionButton("Gradientes", context, null),
                       _buildOptionButton(
                         "Sistemas de Amortización",
