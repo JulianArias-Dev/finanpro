@@ -1,17 +1,28 @@
+import 'package:finan_pro_v1/controllers/interes_compuesto_controller.dart';
 import 'package:flutter/material.dart';
 import 'components/text_field.dart';
+import '../models/tiempo.dart';
 
-class InteresCompuestoScreen extends StatelessWidget {
+class InteresCompuestoScreen extends StatefulWidget {
   const InteresCompuestoScreen({super.key});
 
   @override
+  _InteresCompuestoScreen createState() => _InteresCompuestoScreen();
+}
+
+class _InteresCompuestoScreen extends State<InteresCompuestoScreen> {
+  bool isMonthly = false;
+  bool isAnnual = false;
+
+  @override
   Widget build(BuildContext context) {
+    InteresCompuestoController logicController = InteresCompuestoController();
     TextEditingController capitalController = TextEditingController();
     TextEditingController rateController = TextEditingController();
     TextEditingController yearController = TextEditingController();
     TextEditingController monthController = TextEditingController();
     TextEditingController dayController = TextEditingController();
-    TextEditingController resultController = TextEditingController();
+    TextEditingController interesController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -36,6 +47,32 @@ class InteresCompuestoScreen extends StatelessWidget {
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 20),
+            const Text('Capitalización:'),
+            Row(
+              children: [
+                Checkbox(
+                  value: isMonthly,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      isMonthly = value!;
+                      isAnnual = !isMonthly;
+                    });
+                  },
+                ),
+                const Text("Mensual"),
+                const SizedBox(width: 15),
+                Checkbox(
+                  value: isAnnual,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      isAnnual = value!;
+                      isMonthly = !isAnnual;
+                    });
+                  },
+                ),
+                const Text("Anual"),
+              ],
+            ),
             buildTextField("Capital (\$)", capitalController),
             buildTextField("Tasa de interés (%)", rateController),
             const SizedBox(height: 5),
@@ -47,19 +84,62 @@ class InteresCompuestoScreen extends StatelessWidget {
                 Expanded(child: buildTextField("Días", dayController)),
               ],
             ),
-            buildTextField(
-              "Interés total (\$)",
-              resultController,
-              readOnly: true,
-            ),
+            buildTextField("Valor final (\$)", interesController),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                /* double capital = double.tryParse(capitalController.text) ?? 0;
+                double capital = double.tryParse(capitalController.text) ?? 0;
                 double rate = double.tryParse(rateController.text) ?? 0;
-                double time = double.tryParse(timeController.text) ?? 0;
-                double interest = (capital * rate * time) / 100;
-                resultController.text = interest.toStringAsFixed(2); */
+                int year = int.tryParse(yearController.text) ?? 0;
+                int month = int.tryParse(monthController.text) ?? 0;
+                int day = int.tryParse(dayController.text) ?? 0;
+                Tiempo duree = Tiempo(year, month, day);
+                double generated = double.tryParse(interesController.text) ?? 0;
+                String type =
+                    isAnnual
+                        ? 'annual'
+                        : isMonthly
+                        ? 'monthly'
+                        : '';
+                if (capital == 0) {
+                  capitalController.text = logicController
+                      .calcularCapitalCompuesto(
+                        rate / 100,
+                        generated,
+                        duree,
+                        type,
+                      )
+                      .toStringAsFixed(2);
+                } else if (rate == 0) {
+                  rateController.text = (logicController
+                              .calcularTasaInteresCompuesto(
+                                capital,
+                                generated,
+                                duree,
+                                type,
+                              ) *
+                          100)
+                      .toStringAsFixed(2);
+                } else if (duree.isEmpty()) {
+                  duree = logicController.calcularTiempoInteresCompuesto(
+                    capital,
+                    rate / 100,
+                    generated,
+                    type,
+                  );
+                  yearController.text = duree.years.toString();
+                  monthController.text = duree.months.toString();
+                  dayController.text = duree.days.toString();
+                } else if (generated == 0) {
+                  interesController.text = logicController
+                      .calcularInteresCompuesto(
+                        capital,
+                        rate / 100,
+                        duree,
+                        type,
+                      )
+                      .toStringAsFixed(2);
+                }
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(80, 55),

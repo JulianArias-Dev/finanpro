@@ -1,3 +1,5 @@
+import 'package:finan_pro_v1/controllers/interes_simple_controller.dart';
+import 'package:finan_pro_v1/models/tiempo.dart';
 import 'package:flutter/material.dart';
 import 'components/text_field.dart';
 
@@ -6,12 +8,13 @@ class InterestScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    InteresSimpleController logic_controller = InteresSimpleController();
     TextEditingController capitalController = TextEditingController();
     TextEditingController rateController = TextEditingController();
     TextEditingController yearController = TextEditingController();
     TextEditingController monthController = TextEditingController();
     TextEditingController dayController = TextEditingController();
-    TextEditingController resultController = TextEditingController();
+    TextEditingController interesController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -47,20 +50,44 @@ class InterestScreen extends StatelessWidget {
                 Expanded(child: buildTextField("Días", dayController)),
               ],
             ),
-            buildTextField(
-              "Interés total (\$)",
-              resultController,
-              readOnly: true,
-            ),
+            buildTextField("Interés total (\$)", interesController),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                /* 
                 double capital = double.tryParse(capitalController.text) ?? 0;
                 double rate = double.tryParse(rateController.text) ?? 0;
-                double time = double.tryParse(timeController.text) ?? 0;
-                double interest = (capital * rate * time) / 100;
-                resultController.text = interest.toStringAsFixed(2); */
+                int year = int.tryParse(yearController.text) ?? 0;
+                int month = int.tryParse(monthController.text) ?? 0;
+                int day = int.tryParse(dayController.text) ?? 0;
+                Tiempo duree = Tiempo(year, month, day);
+                double generated = double.tryParse(interesController.text) ?? 0;
+                if (capital == 0) {
+                  capitalController.text = logic_controller
+                      .calcularCapitalSimple(rate / 100, generated, duree)
+                      .toStringAsFixed(2);
+                } else if (rate == 0) {
+                  rateController.text = (logic_controller
+                              .calcularTasaInteresSimple(
+                                capital,
+                                generated,
+                                duree,
+                              ) *
+                          100)
+                      .toStringAsFixed(2);
+                } else if (duree.isEmpty()) {
+                  duree = logic_controller.calcularTiempoInteresSimple(
+                    capital,
+                    rate / 100,
+                    generated,
+                  );
+                  yearController.text = duree.years.toString();
+                  monthController.text = duree.months.toString();
+                  dayController.text = duree.days.toString();
+                } else if (generated == 0) {
+                  interesController.text = logic_controller
+                      .calculerInteretSimple(capital, rate / 100, duree)
+                      .toStringAsFixed(2);
+                }
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(80, 55),

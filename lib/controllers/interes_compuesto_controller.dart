@@ -86,22 +86,25 @@ class InteresCompuestoController {
     double montoCompuesto,
     String type,
   ) {
-    if (capital <= 0 || interes <= 0 || montoCompuesto <= 0 || type.isEmpty) {
+    if (capital <= 0 ||
+        interes <= 0 ||
+        montoCompuesto <= capital ||
+        type.isEmpty) {
       throw ArgumentError(
-        "Todos los argumentos deben ser mayores que cero y el tipo no debe estar vacío.",
+        "Todos los argumentos deben ser positivos y el monto compuesto debe ser mayor que el capital.",
       );
     }
 
-    int cicles =
-        ((log(montoCompuesto) - log(capital)) / log(1 + interes)).toInt();
+    double cicles = (log(montoCompuesto) - log(capital)) / log(1 + interes);
 
     switch (type) {
       case 'monthly':
-        int years = cicles ~/ 12;
-        int months = cicles % 12;
+        int totalMonths = cicles.floor();
+        int years = totalMonths ~/ 12;
+        int months = totalMonths % 12;
         return Tiempo(years, months, 0);
       case 'annual':
-        return Tiempo(cicles, 0, 0);
+        return Tiempo(cicles.floor(), 0, 0);
       default:
         throw ArgumentError("Tipo no válido. Debe ser 'monthly' o 'annual'.");
     }
