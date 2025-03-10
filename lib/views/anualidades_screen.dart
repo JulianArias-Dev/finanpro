@@ -1,3 +1,4 @@
+import 'package:finan_pro_v1/controllers/anualidades_controller.dart';
 import 'package:flutter/material.dart';
 import 'components/text_field.dart';
 
@@ -9,9 +10,10 @@ class AnualidadesScreen extends StatefulWidget {
 }
 
 class _AnualidadesScreenState extends State<AnualidadesScreen> {
+  AnualidadesController controller = AnualidadesController();
   TextEditingController capitalController = TextEditingController();
   TextEditingController rateController = TextEditingController();
-  TextEditingController timeController = TextEditingController();
+  TextEditingController periodController = TextEditingController();
   TextEditingController resultController = TextEditingController();
   bool isPresentValue = false;
   bool isFutureValue = false;
@@ -43,7 +45,7 @@ class _AnualidadesScreenState extends State<AnualidadesScreen> {
             const SizedBox(height: 20),
             buildTextField("Capital (\$)", capitalController),
             buildTextField("Tasa de anualidad (%)", rateController),
-            buildTextField("Periodos de Capitalizacion", timeController),
+            buildTextField("Periodos de Capitalizacion", periodController),
             buildTextField(
               "Valor Final/Actual (\$)",
               resultController,
@@ -57,6 +59,7 @@ class _AnualidadesScreenState extends State<AnualidadesScreen> {
                   onChanged: (bool? value) {
                     setState(() {
                       isPresentValue = value!;
+                      isFutureValue = !isPresentValue;
                     });
                   },
                 ),
@@ -67,6 +70,7 @@ class _AnualidadesScreenState extends State<AnualidadesScreen> {
                   onChanged: (bool? value) {
                     setState(() {
                       isFutureValue = value!;
+                      isPresentValue = !isFutureValue;
                     });
                   },
                 ),
@@ -77,10 +81,33 @@ class _AnualidadesScreenState extends State<AnualidadesScreen> {
             ElevatedButton(
               onPressed: () {
                 double capital = double.tryParse(capitalController.text) ?? 0;
-                double rate = double.tryParse(rateController.text) ?? 0;
-                double time = double.tryParse(timeController.text) ?? 0;
-                double interest = (capital * rate * time) / 100;
-                resultController.text = interest.toStringAsFixed(2);
+                double i = double.tryParse(rateController.text) ?? 0;
+                int n = int.tryParse(periodController.text) ?? 0;
+                try {
+                  if (isFutureValue) {
+                    resultController.text = controller
+                        .calcularValorFinal(capital, i / 100, n)
+                        .toStringAsFixed(2);
+                  } else if (isPresentValue) {
+                    resultController.text = controller
+                        .calcularValorActual(capital, i / 100, n)
+                        .toStringAsFixed(2);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Debe escoger una opción para calcular.'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(e.toString()),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(80, 55),
