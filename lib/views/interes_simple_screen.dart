@@ -8,7 +8,9 @@ class InterestScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController capitalController = TextEditingController();
     TextEditingController rateController = TextEditingController();
-    TextEditingController timeController = TextEditingController();
+    TextEditingController yearController = TextEditingController();
+    TextEditingController monthController = TextEditingController();
+    TextEditingController dayController = TextEditingController();
     TextEditingController resultController = TextEditingController();
 
     return Scaffold(
@@ -36,7 +38,15 @@ class InterestScreen extends StatelessWidget {
             const SizedBox(height: 20),
             buildTextField("Capital (\$)", capitalController),
             buildTextField("Tasa de interés (%)", rateController),
-            buildTextField("Tiempo (años)", timeController),
+            const SizedBox(height: 5),
+            const Text('Tiempo'),
+            Row(
+              children: [
+                Expanded(child: buildTextField("Años", yearController)),
+                Expanded(child: buildTextField("Meses", monthController)),
+                Expanded(child: buildTextField("Días", dayController)),
+              ],
+            ),
             buildTextField(
               "Interés total (\$)",
               resultController,
@@ -45,11 +55,12 @@ class InterestScreen extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
+                /* 
                 double capital = double.tryParse(capitalController.text) ?? 0;
                 double rate = double.tryParse(rateController.text) ?? 0;
                 double time = double.tryParse(timeController.text) ?? 0;
                 double interest = (capital * rate * time) / 100;
-                resultController.text = interest.toStringAsFixed(2);
+                resultController.text = interest.toStringAsFixed(2); */
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(80, 55),
