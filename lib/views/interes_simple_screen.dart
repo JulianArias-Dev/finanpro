@@ -61,32 +61,41 @@ class InterestScreen extends StatelessWidget {
                 int day = int.tryParse(dayController.text) ?? 0;
                 Tiempo duree = Tiempo(year, month, day);
                 double generated = double.tryParse(interesController.text) ?? 0;
-                if (capital == 0) {
-                  capitalController.text = logic_controller
-                      .calcularCapitalSimple(rate / 100, generated, duree)
-                      .toStringAsFixed(2);
-                } else if (rate == 0) {
-                  rateController.text = (logic_controller
-                              .calcularTasaInteresSimple(
-                                capital,
-                                generated,
-                                duree,
-                              ) *
-                          100)
-                      .toStringAsFixed(2);
-                } else if (duree.isEmpty()) {
-                  duree = logic_controller.calcularTiempoInteresSimple(
-                    capital,
-                    rate / 100,
-                    generated,
+                try {
+                  if (capital == 0) {
+                    capitalController.text = logic_controller
+                        .calcularCapitalSimple(rate / 100, generated, duree)
+                        .toStringAsFixed(2);
+                  } else if (rate == 0) {
+                    rateController.text = (logic_controller
+                                .calcularTasaInteresSimple(
+                                  capital,
+                                  generated,
+                                  duree,
+                                ) *
+                            100)
+                        .toStringAsFixed(2);
+                  } else if (duree.isEmpty()) {
+                    duree = logic_controller.calcularTiempoInteresSimple(
+                      capital,
+                      rate / 100,
+                      generated,
+                    );
+                    yearController.text = duree.years.toString();
+                    monthController.text = duree.months.toString();
+                    dayController.text = duree.days.toString();
+                  } else if (generated == 0) {
+                    interesController.text = logic_controller
+                        .calculerInteretSimple(capital, rate / 100, duree)
+                        .toStringAsFixed(2);
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(e.toString()),
+                      backgroundColor: Colors.red,
+                    ),
                   );
-                  yearController.text = duree.years.toString();
-                  monthController.text = duree.months.toString();
-                  dayController.text = duree.days.toString();
-                } else if (generated == 0) {
-                  interesController.text = logic_controller
-                      .calculerInteretSimple(capital, rate / 100, duree)
-                      .toStringAsFixed(2);
                 }
               },
               style: ElevatedButton.styleFrom(

@@ -11,19 +11,18 @@ class InteresCompuestoScreen extends StatefulWidget {
 }
 
 class _InteresCompuestoScreen extends State<InteresCompuestoScreen> {
+  InteresCompuestoController logicController = InteresCompuestoController();
+  TextEditingController capitalController = TextEditingController();
+  TextEditingController rateController = TextEditingController();
+  TextEditingController yearController = TextEditingController();
+  TextEditingController monthController = TextEditingController();
+  TextEditingController dayController = TextEditingController();
+  TextEditingController interesController = TextEditingController();
   bool isMonthly = false;
   bool isAnnual = false;
 
   @override
   Widget build(BuildContext context) {
-    InteresCompuestoController logicController = InteresCompuestoController();
-    TextEditingController capitalController = TextEditingController();
-    TextEditingController rateController = TextEditingController();
-    TextEditingController yearController = TextEditingController();
-    TextEditingController monthController = TextEditingController();
-    TextEditingController dayController = TextEditingController();
-    TextEditingController interesController = TextEditingController();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -101,44 +100,61 @@ class _InteresCompuestoScreen extends State<InteresCompuestoScreen> {
                         : isMonthly
                         ? 'monthly'
                         : '';
-                if (capital == 0) {
-                  capitalController.text = logicController
-                      .calcularCapitalCompuesto(
-                        rate / 100,
-                        generated,
-                        duree,
-                        type,
-                      )
-                      .toStringAsFixed(2);
-                } else if (rate == 0) {
-                  rateController.text = (logicController
-                              .calcularTasaInteresCompuesto(
-                                capital,
-                                generated,
-                                duree,
-                                type,
-                              ) *
-                          100)
-                      .toStringAsFixed(2);
-                } else if (duree.isEmpty()) {
-                  duree = logicController.calcularTiempoInteresCompuesto(
-                    capital,
-                    rate / 100,
-                    generated,
-                    type,
+                try {
+                  if (type.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Debe escoger una opción para calcular.'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                  if (capital == 0) {
+                    capitalController.text = logicController
+                        .calcularCapitalCompuesto(
+                          rate / 100,
+                          generated,
+                          duree,
+                          type,
+                        )
+                        .toStringAsFixed(2);
+                  } else if (rate == 0) {
+                    rateController.text = (logicController
+                                .calcularTasaInteresCompuesto(
+                                  capital,
+                                  generated,
+                                  duree,
+                                  type,
+                                ) *
+                            100)
+                        .toStringAsFixed(2);
+                  } else if (duree.isEmpty()) {
+                    duree = logicController.calcularTiempoInteresCompuesto(
+                      capital,
+                      rate / 100,
+                      generated,
+                      type,
+                    );
+                    yearController.text = duree.years.toString();
+                    monthController.text = duree.months.toString();
+                    dayController.text = duree.days.toString();
+                  } else if (generated == 0) {
+                    interesController.text = logicController
+                        .calcularInteresCompuesto(
+                          capital,
+                          rate / 100,
+                          duree,
+                          type,
+                        )
+                        .toStringAsFixed(2);
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(e.toString()),
+                      backgroundColor: Colors.red,
+                    ),
                   );
-                  yearController.text = duree.years.toString();
-                  monthController.text = duree.months.toString();
-                  dayController.text = duree.days.toString();
-                } else if (generated == 0) {
-                  interesController.text = logicController
-                      .calcularInteresCompuesto(
-                        capital,
-                        rate / 100,
-                        duree,
-                        type,
-                      )
-                      .toStringAsFixed(2);
                 }
               },
               style: ElevatedButton.styleFrom(
