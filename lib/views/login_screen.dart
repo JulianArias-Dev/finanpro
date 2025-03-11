@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:local_auth/local_auth.dart'; // Para autenticación biométrica
 import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -11,6 +12,21 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   String pin = "";
+  final LocalAuthentication auth = LocalAuthentication();
+
+  Future<void> _authenticate() async {
+    try {
+      bool authenticated = await auth.authenticate(
+        localizedReason: "Escanea tu huella para ingresar",
+        options: const AuthenticationOptions(biometricOnly: true),
+      );
+      if (authenticated) {
+        Get.to(() => const HomeScreen());
+      }
+    } catch (e) {
+      print("Error en autenticación biométrica: $e");
+    }
+  }
 
   void _onKeyPressed(String value) {
     if (value == "backspace") {
@@ -19,13 +35,14 @@ class _LoginScreenState extends State<LoginScreen> {
           pin = pin.substring(0, pin.length - 1);
         }
       });
+    } else if (value == "fingerprint") {
+      _authenticate();
     } else {
       if (pin.length < 4) {
         setState(() {
           pin += value;
         });
         if (pin.length == 4) {
-          // Navegar a HomeScreen cuando el PIN tenga 4 dígitos
           Get.to(() => const HomeScreen());
         }
       }
@@ -35,21 +52,29 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildKeypadButton(String value) {
     return GestureDetector(
       onTap: () => _onKeyPressed(value),
-      child: Container(
-        width: 40,
-        height: 40,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 100),
+        width: 10,
+        height: 10,
+        margin: EdgeInsets.all(10),
         alignment: Alignment.center,
-        /* decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle), */
+        decoration: BoxDecoration(
+          color:
+              value == "backspace" || value == "fingerprint"
+                  ? Colors.transparent
+                  : Colors.white.withOpacity(0.2),
+          shape: BoxShape.circle,
+        ),
         child:
             value == "backspace"
-                ? const Icon(Icons.backspace, size: 28, color: Colors.white)
+                ? const Icon(Icons.backspace, size: 30, color: Colors.black)
                 : value == "fingerprint"
-                ? const Icon(Icons.fingerprint, size: 28, color: Colors.white)
+                ? const Icon(Icons.fingerprint, size: 30, color: Colors.white)
                 : Text(
                   value,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 24,
+                    fontSize: 30,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -86,39 +111,42 @@ class _LoginScreenState extends State<LoginScreen> {
             children: List.generate(4, (index) {
               return Container(
                 margin: const EdgeInsets.symmetric(horizontal: 8),
-                width: 40,
-                height: 40,
+                width: 50,
+                height: 50,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Center(
                   child: Text(
                     index < pin.length ? "●" : "",
-                    style: const TextStyle(fontSize: 24),
+                    style: const TextStyle(fontSize: 32, color: Colors.black),
                   ),
                 ),
               );
             }),
           ),
           const SizedBox(height: 20),
-          GridView.count(
-            shrinkWrap: true,
-            crossAxisCount: 3,
-            mainAxisSpacing: 5,
-            crossAxisSpacing: 5,
-            children: [
-              for (var i = 1; i <= 9; i++) _buildKeypadButton(i.toString()),
-              _buildKeypadButton("fingerprint"),
-              _buildKeypadButton("0"),
-              _buildKeypadButton("backspace"),
-            ],
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 30,
+            ), // Ajusta el margen lateral
+            child: GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 3,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              children: [
+                for (var i = 1; i <= 9; i++) _buildKeypadButton(i.toString()),
+                _buildKeypadButton("fingerprint"),
+                _buildKeypadButton("0"),
+                _buildKeypadButton("backspace"),
+              ],
+            ),
           ),
           const SizedBox(height: 20),
           TextButton(
-            onPressed: () {
-              // Acción al olvidar la clave
-            },
+            onPressed: () {},
             child: const Text(
               "¿Olvidó su contraseña?",
               style: TextStyle(color: Colors.white, fontSize: 20),
