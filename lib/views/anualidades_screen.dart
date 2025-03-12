@@ -21,6 +21,7 @@ class _AnualidadesScreenState extends State<AnualidadesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text(
           "FinanPro",
@@ -28,95 +29,99 @@ class _AnualidadesScreenState extends State<AnualidadesScreen> {
         ),
         backgroundColor: Color.fromARGB(255, 111, 183, 31),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Anualidades",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              "Las anualidades son pagos periódicos iguales que no necesariamente tienen que ser anuales como lo indica su nombre; un ejemplo de este tipo de pagos son las pensiones, seguros, deudas pactadas con abonos iguales, etc.",
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 20),
-            buildTextField("Capital (\$)", capitalController),
-            buildTextField("Tasa de anualidad (%)", rateController),
-            buildTextField("Periodos de Capitalizacion", periodController),
-            buildTextField(
-              "Valor Final/Actual (\$)",
-              resultController,
-              readOnly: true,
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Checkbox(
-                  value: isPresentValue,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      isPresentValue = value!;
-                      isFutureValue = !isPresentValue;
-                    });
-                  },
-                ),
-                const Text("Valor Actual"),
-                const SizedBox(width: 15),
-                Checkbox(
-                  value: isFutureValue,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      isFutureValue = value!;
-                      isPresentValue = !isFutureValue;
-                    });
-                  },
-                ),
-                const Text("Valor Final"),
-              ],
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                double capital = double.tryParse(capitalController.text) ?? 0;
-                double i = double.tryParse(rateController.text) ?? 0;
-                int n = int.tryParse(periodController.text) ?? 0;
-                try {
-                  if (isFutureValue) {
-                    resultController.text = controller
-                        .calcularValorFinal(capital, i / 100, n)
-                        .toStringAsFixed(2);
-                  } else if (isPresentValue) {
-                    resultController.text = controller
-                        .calcularValorActual(capital, i / 100, n)
-                        .toStringAsFixed(2);
-                  } else {
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Anualidades",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                "Las anualidades son pagos periódicos iguales que no necesariamente tienen que ser anuales como lo indica su nombre; un ejemplo de este tipo de pagos son las pensiones, seguros, deudas pactadas con abonos iguales, etc.",
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 20),
+              buildTextField("Capital (\$)", capitalController),
+              buildTextField("Tasa de anualidad (%)", rateController),
+              buildTextField("Periodos de Capitalizacion", periodController),
+              buildTextField(
+                "Valor Final/Actual (\$)",
+                resultController,
+                readOnly: true,
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Checkbox(
+                    value: isPresentValue,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isPresentValue = value!;
+                        isFutureValue = !isPresentValue;
+                      });
+                    },
+                  ),
+                  const Text("Valor Actual"),
+                  const SizedBox(width: 15),
+                  Checkbox(
+                    value: isFutureValue,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isFutureValue = value!;
+                        isPresentValue = !isFutureValue;
+                      });
+                    },
+                  ),
+                  const Text("Valor Final"),
+                ],
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  double capital = double.tryParse(capitalController.text) ?? 0;
+                  double i = double.tryParse(rateController.text) ?? 0;
+                  int n = int.tryParse(periodController.text) ?? 0;
+                  try {
+                    if (isFutureValue) {
+                      resultController.text = controller
+                          .calcularValorFinal(capital, i / 100, n)
+                          .toStringAsFixed(2);
+                    } else if (isPresentValue) {
+                      resultController.text = controller
+                          .calcularValorActual(capital, i / 100, n)
+                          .toStringAsFixed(2);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Debe escoger una opción para calcular.',
+                          ),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Debe escoger una opción para calcular.'),
+                      SnackBar(
+                        content: Text(e.toString()),
                         backgroundColor: Colors.red,
                       ),
                     );
                   }
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(e.toString()),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(80, 55),
-                backgroundColor: const Color.fromARGB(255, 111, 183, 31),
-                foregroundColor: Colors.white, // Text color
+                },
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(80, 55),
+                  backgroundColor: const Color.fromARGB(255, 111, 183, 31),
+                  foregroundColor: Colors.white, // Text color
+                ),
+                child: const Text("Calcular", style: TextStyle(fontSize: 20)),
               ),
-              child: const Text("Calcular", style: TextStyle(fontSize: 20)),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

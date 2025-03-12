@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "497401494513",
+    "project_id": "finanpro-78ec9",
+    "storage_bucket": "finanpro-78ec9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497401494513:android:701cd67f227988eaf6a250",
+        "android_client_info": {
+          "package_name": "com.example.finan_pro_v1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHCvmnIKAkUcDRS1gQYtmhpI-MPtCoFRA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

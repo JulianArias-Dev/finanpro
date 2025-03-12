@@ -15,6 +15,9 @@ class _LoginScreenState extends State<LoginScreen> {
   final LocalAuthentication auth = LocalAuthentication();
 
   Future<void> _authenticate() async {
+    final scaffoldMessenger = ScaffoldMessenger.of(
+      context,
+    ); // Obtener la referencia antes del método asíncrono
     try {
       bool authenticated = await auth.authenticate(
         localizedReason: "Escanea tu huella para ingresar",
@@ -24,7 +27,12 @@ class _LoginScreenState extends State<LoginScreen> {
         Get.to(() => const HomeScreen());
       }
     } catch (e) {
-      print("Error en autenticación biométrica: $e");
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text('Error en autenticación biométrica: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -62,12 +70,12 @@ class _LoginScreenState extends State<LoginScreen> {
           color:
               value == "backspace" || value == "fingerprint"
                   ? Colors.transparent
-                  : Colors.white.withOpacity(0.2),
+                  : Colors.white,
           shape: BoxShape.circle,
         ),
         child:
             value == "backspace"
-                ? const Icon(Icons.backspace, size: 30, color: Colors.black)
+                ? const Icon(Icons.backspace, size: 30, color: Colors.white)
                 : value == "fingerprint"
                 ? const Icon(Icons.fingerprint, size: 30, color: Colors.white)
                 : Text(
@@ -85,6 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: const Color.fromARGB(255, 111, 183, 31),
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 111, 183, 31),
@@ -94,65 +103,67 @@ class _LoginScreenState extends State<LoginScreen> {
           onPressed: () => Get.back(),
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            "Ingrese su Clave...",
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              "Ingrese su Clave...",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(4, (index) {
-              return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 8),
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: Text(
-                    index < pin.length ? "●" : "",
-                    style: const TextStyle(fontSize: 32, color: Colors.black),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(4, (index) {
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                ),
-              );
-            }),
-          ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 30,
-            ), // Ajusta el margen lateral
-            child: GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 3,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              children: [
-                for (var i = 1; i <= 9; i++) _buildKeypadButton(i.toString()),
-                _buildKeypadButton("fingerprint"),
-                _buildKeypadButton("0"),
-                _buildKeypadButton("backspace"),
-              ],
+                  child: Center(
+                    child: Text(
+                      index < pin.length ? "●" : "",
+                      style: const TextStyle(fontSize: 32, color: Colors.black),
+                    ),
+                  ),
+                );
+              }),
             ),
-          ),
-          const SizedBox(height: 20),
-          TextButton(
-            onPressed: () {},
-            child: const Text(
-              "¿Olvidó su contraseña?",
-              style: TextStyle(color: Colors.white, fontSize: 20),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 30,
+              ), // Ajusta el margen lateral
+              child: GridView.count(
+                shrinkWrap: true,
+                crossAxisCount: 3,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                children: [
+                  for (var i = 1; i <= 9; i++) _buildKeypadButton(i.toString()),
+                  _buildKeypadButton("fingerprint"),
+                  _buildKeypadButton("0"),
+                  _buildKeypadButton("backspace"),
+                ],
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 20),
+            TextButton(
+              onPressed: () {},
+              child: const Text(
+                "¿Olvidó su contraseña?",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

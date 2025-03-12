@@ -9,130 +9,139 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            width: double.infinity,
-            color: const Color.fromARGB(255, 111, 183, 31),
-            child: Column(
-              children: [
-                const SizedBox(height: 35),
-                const Text(
-                  "Bienvenido Robert",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              width: double.infinity,
+              color: const Color.fromARGB(255, 111, 183, 31),
+              child: Column(
+                children: [
+                  const SizedBox(height: 35),
+                  const Text(
+                    "Bienvenido Robert",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  "Saldo",
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
-                const Text(
-                  "\$ 35 890.45",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
+                  const SizedBox(height: 10),
+                  const Text(
+                    "Saldo",
+                    style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
-                ),
-                const SizedBox(height: 50),
-              ],
+                  const Text(
+                    "\$ 35 890.45",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 50),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 30),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Educación Financiera",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            const SizedBox(height: 30),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Educación Financiera",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 15),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      _buildOptionButton(
-                        "Interés Simple",
-                        context,
-                        const InterestScreen(),
-                      ),
-                      _buildOptionButton(
-                        "Interés Compuesto",
-                        context,
-                        const InteresCompuestoScreen(),
-                      ),
-                      _buildOptionButton(
-                        "Anualidades",
-                        context,
-                        const AnualidadesScreen(),
-                      ),
-                      _buildOptionButton("Gradientes", context, null),
-                      _buildOptionButton(
-                        "Sistemas de Amortización",
-                        context,
-                        null,
-                      ),
-                      _buildOptionButton(
-                        "Sistemas de Capitalización",
-                        context,
-                        null,
-                      ),
-                      _buildOptionButton("TIR", context, null),
-                      _buildOptionButton("UVR", context, null),
-                    ],
+                  const SizedBox(height: 15),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        _buildOptionButton(
+                          "Interés Simple",
+                          context,
+                          const InterestScreen(),
+                        ),
+                        _buildOptionButton(
+                          "Interés Compuesto",
+                          context,
+                          const InteresCompuestoScreen(),
+                        ),
+                        _buildOptionButton(
+                          "Anualidades",
+                          context,
+                          const AnualidadesScreen(),
+                        ),
+                        _buildOptionButton("Gradientes", context, null),
+                        _buildOptionButton(
+                          "Sistemas de Amortización",
+                          context,
+                          null,
+                        ),
+                        _buildOptionButton(
+                          "Sistemas de Capitalización",
+                          context,
+                          null,
+                        ),
+                        _buildOptionButton("TIR", context, null),
+                        _buildOptionButton("UVR", context, null),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 100),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Gestión de Préstamos",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            const SizedBox(height: 100),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Gestión de Préstamos",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      _buildOptionButton("Nuevo Préstamo", context, null),
-                      _buildOptionButton("Préstamos Vigentes", context, null),
-                      _buildOptionButton("Pagar Préstamo", context, null),
-                    ],
+                  const SizedBox(height: 10),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        _buildOptionButton("Nuevo Préstamo", context, null),
+                        _buildOptionButton("Préstamos Vigentes", context, null),
+                        _buildOptionButton("Pagar Préstamo", context, null),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
