@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:finan_pro_v1/controllers/auth_controller.dart';
 import 'components/text_field.dart';
 
 class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
+  RegisterScreen({super.key});
+
+  final AuthController _authController = Get.put(AuthController());
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController secondNameController = TextEditingController();
+  final TextEditingController firstLastNameController = TextEditingController();
+  final TextEditingController secondLastNameController =
+      TextEditingController();
+  final TextEditingController birthDateController = TextEditingController();
+  final TextEditingController idController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController firstNameController = TextEditingController();
-    TextEditingController secondNameController = TextEditingController();
-    TextEditingController firstLastNameController = TextEditingController();
-    TextEditingController secondLastNameController = TextEditingController();
-    TextEditingController birthDateController = TextEditingController();
-    TextEditingController idController = TextEditingController();
-    TextEditingController emailController = TextEditingController();
-    TextEditingController phoneController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
+    DateTime? birthDate;
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -35,7 +41,32 @@ class RegisterScreen extends StatelessWidget {
               buildTextField("Segundo Nombre", secondNameController),
               buildTextField("Primer Apellido", firstLastNameController),
               buildTextField("Segundo Apellido", secondLastNameController),
-              buildTextField("Fecha de Nacimiento", birthDateController),
+              Row(
+                children: [
+                  Expanded(
+                    child: buildTextField(
+                      "Fecha de Nacimiento",
+                      birthDateController,
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.calendar_today),
+                    onPressed: () async {
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(1900),
+                        lastDate: DateTime(2100),
+                      );
+                      if (pickedDate != null) {
+                        birthDate = pickedDate;
+                        birthDateController.text =
+                            "${pickedDate.toLocal()}".split(' ')[0];
+                      }
+                    },
+                  ),
+                ],
+              ),
               buildTextField("Cédula", idController),
               buildTextField("Email", emailController),
               buildTextField("Teléfono", phoneController),
@@ -43,20 +74,22 @@ class RegisterScreen extends StatelessWidget {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  String firstName = firstNameController.text;
-                  String secondName = secondNameController.text;
-                  String firstLastName = firstLastNameController.text;
-                  String secondLastName = secondLastNameController.text;
-                  String birthDate = birthDateController.text;
-                  String id = idController.text;
-                  String email = emailController.text;
-                  String phone = phoneController.text;
-                  String password = passwordController.text;
+                  String firstName = firstNameController.text.trim();
+                  String secondName = secondNameController.text.trim();
+                  String firstLastName = firstLastNameController.text.trim();
+                  String secondLastName = secondLastNameController.text.trim();
+                  String documentNumber = idController.text.trim();
+                  String email = emailController.text.trim();
+                  String phone = phoneController.text.trim();
+                  String password = passwordController.text.trim();
 
                   if (firstName.isEmpty ||
                       firstLastName.isEmpty ||
-                      id.isEmpty ||
+                      secondLastName.isEmpty ||
+                      documentNumber.isEmpty ||
+                      phone.isEmpty ||
                       email.isEmpty ||
+                      birthDate == null ||
                       password.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -66,15 +99,28 @@ class RegisterScreen extends StatelessWidget {
                         backgroundColor: Colors.red,
                       ),
                     );
-                    return;
+                  }
+
+                  if (password.length > 6) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("La contraseña debe ser de 4 dígitos"),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
                   }
 
                   // Aquí puedes agregar la lógica para enviar los datos al backend
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("Registro enviado con éxito."),
-                      backgroundColor: Colors.green,
-                    ),
+                  _authController.register(
+                    email,
+                    password,
+                    firstName,
+                    secondName,
+                    firstLastName,
+                    secondLastName,
+                    documentNumber,
+                    phone,
+                    birthDate!,
                   );
                 },
                 style: ElevatedButton.styleFrom(

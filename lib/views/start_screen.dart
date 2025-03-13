@@ -4,7 +4,13 @@ import 'login_screen.dart';
 import './register_screen.dart';
 
 class StartScreen extends StatelessWidget {
-  const StartScreen({super.key});
+  StartScreen({super.key}) {
+    cedulaController.loadStoredCedula();
+    textController.text = cedulaController.cedula.value;
+  }
+
+  final CedulaController cedulaController = Get.put(CedulaController());
+  final TextEditingController textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -41,12 +47,13 @@ class StartScreen extends StatelessWidget {
               ),
               const SizedBox(height: 150),
               TextField(
+                controller: textController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
                   prefixIcon: const Icon(Icons.person),
-                  hintText: "1003456877",
+                  hintText: "Cédula",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -54,12 +61,25 @@ class StartScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () => Get.to(() => const LoginScreen()),
+                onPressed: () {
+                  if (textController.text.trim().length != 8 &&
+                      textController.text.trim().length != 10) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("La cédula debe tener 8 o 10 dígitos"),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+                  cedulaController.setCedula(textController.text);
+                  Get.to(() => const LoginScreen());
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color.fromARGB(255, 248, 221, 32),
                   padding: const EdgeInsets.symmetric(
                     vertical: 15,
-                    horizontal: 130,
+                    horizontal: 133,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -76,7 +96,9 @@ class StartScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () => Get.to(() => const RegisterScreen()),
+                onPressed: () {
+                  Get.to(() => RegisterScreen());
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(0, 183, 183, 183),
                   padding: const EdgeInsets.symmetric(

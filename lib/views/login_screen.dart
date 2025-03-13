@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:local_auth/local_auth.dart'; // Para autenticación biométrica
-import 'home_screen.dart';
+import 'package:finan_pro_v1/controllers/auth_controller.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,18 +14,22 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   String pin = "";
   final LocalAuthentication auth = LocalAuthentication();
+  final AuthController _authController = Get.put(AuthController());
+  final CedulaController cedulaController = Get.find();
 
   Future<void> _authenticate() async {
     final scaffoldMessenger = ScaffoldMessenger.of(
       context,
     ); // Obtener la referencia antes del método asíncrono
     try {
-      bool authenticated = await auth.authenticate(
-        localizedReason: "Escanea tu huella para ingresar",
-        options: const AuthenticationOptions(biometricOnly: true),
-      );
-      if (authenticated) {
-        Get.to(() => const HomeScreen());
+      if (await _authController.areCredentialsStored()) {
+        bool authenticated = await auth.authenticate(
+          localizedReason: "Escanea tu huella para ingresar",
+          options: const AuthenticationOptions(biometricOnly: true),
+        );
+        if (authenticated) {
+          await _authController.autoLogin();
+        }
       }
     } catch (e) {
       scaffoldMessenger.showSnackBar(
@@ -46,12 +51,12 @@ class _LoginScreenState extends State<LoginScreen> {
     } else if (value == "fingerprint") {
       _authenticate();
     } else {
-      if (pin.length < 4) {
+      if (pin.length < 6) {
         setState(() {
           pin += value;
         });
-        if (pin.length == 4) {
-          Get.to(() => const HomeScreen());
+        if (pin.length == 6) {
+          _authController.login(cedulaController.cedula.value, pin);
         }
       }
     }
@@ -67,10 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
         margin: EdgeInsets.all(10),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color:
-              value == "backspace" || value == "fingerprint"
-                  ? Colors.transparent
-                  : Colors.white,
+          color: Colors.transparent,
           shape: BoxShape.circle,
         ),
         child:
@@ -118,10 +120,10 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(4, (index) {
+              children: List.generate(6, (index) {
                 return Container(
                   margin: const EdgeInsets.symmetric(horizontal: 8),
-                  width: 50,
+                  width: 45,
                   height: 50,
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -130,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Center(
                     child: Text(
                       index < pin.length ? "●" : "",
-                      style: const TextStyle(fontSize: 32, color: Colors.black),
+                      style: const TextStyle(fontSize: 28, color: Colors.black),
                     ),
                   ),
                 );
@@ -166,5 +168,21 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+}
+
+class CedulaController extends GetxController {
+  var cedula = ''.obs;
+  final storage = GetStorage();
+
+  void setCedula(String value) {
+    cedula.value = value;
+  }
+
+  void loadStoredCedula() {
+    String? storedCedula = storage.read('documentNumber');
+    if (storedCedula != null) {
+      cedula.value = storedCedula;
+    }
   }
 }
